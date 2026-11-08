@@ -40,7 +40,7 @@ jobs:
       DATABASE_URL: postgresql://ci:ci@localhost:5432/ci?schema=public
       REDIS_URL: redis://localhost:6379
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -65,7 +65,7 @@ jobs:
       run:
         working-directory: frontend
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -81,7 +81,7 @@ jobs:
     name: Dependency and secret scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: fs
@@ -103,7 +103,7 @@ jobs:
       matrix:
         component: [backend, frontend]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Image name
         run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}/${{ matrix.component }}" >> "$GITHUB_ENV"
       - uses: docker/setup-buildx-action@v3
@@ -142,7 +142,7 @@ jobs:
     needs: [backend, frontend]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -183,7 +183,7 @@ jobs:
     # Add required reviewers to the "production" environment (Settings > Environments) for the approval gate.
     environment: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: azure/setup-kubectl@v4
       - uses: azure/setup-helm@v4
       - name: Configure cluster access
