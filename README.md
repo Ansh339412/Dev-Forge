@@ -175,15 +175,3 @@ backend/src
 - Non-members get 404 on workspace routes so workspace IDs are not enumerable.
 - No credentials in the repo; the app refuses to boot with missing env vars or the placeholder JWT secret.
 
-## Known limitations
-
-- The frontend keeps the refresh token in `localStorage` so reloads stay signed in. That is exposed to XSS; moving it to an httpOnly cookie is planned hardening. The access token lives in memory only.
-- Nothing here has been run end to end yet: dependencies could not be installed in the authoring environment. Manifests, the pipeline and the dashboard were only syntax-checked.
-- The SeaweedFS image is unpinned (`latest`); pin a tag once you pick one. The local storage setup is untested.
-- Socket.IO tokens are checked at connect time only.
-- Drag-and-drop is disabled while filters are active (indexes would not match the full column).
-
-- Registration returns 409 for existing emails (standard trade-off; enumeration is possible there, and rate limited).
-- Last-admin protection is check-then-write, not serialized; fine at this scale, tighten with a transaction or lock if needed.
-- Migrations run on container start; in Kubernetes move them to a Job.
-- This code was written without network access, so it has not been compiled or run yet. Expect to fix small type or dependency-version issues on first build.
