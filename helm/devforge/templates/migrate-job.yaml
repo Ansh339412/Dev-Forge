@@ -1,0 +1,53 @@
+# Runs before every install/upgrade, so the new backend never starts against an old schema.
+# It needs only DATABASE_URL, which comes from the pre-created Secret.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "devforge.fullname" . }}-migrate-{{ .Release.Revision }}
+  labels:
+    {{- include "devforge.labels" . | nindent 4 }}
+    app.kubernetes.io/component: migrate
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        {{- include "devforge.selector" (dict "ctx" . "component" "migrate") | nindent 8 }}
+    spec:
+      restartPolicy: OnFailure
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: migrate
+          image: {{ include "devforge.image" (dict "root" . "spec" .Values.backend "name" "backend") }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["npx", "prisma", "migrate", "deploy"]
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.existingSecret }}
+                  key: DATABASE_URL
+            - name: HOME
+              value: /tmp
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]

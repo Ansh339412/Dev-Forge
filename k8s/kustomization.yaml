@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: devforge
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - postgres.yaml
+  - redis.yaml
+  - seaweedfs.yaml
+  - mailhog.yaml
+  - backend.yaml
+  - frontend.yaml
+  - ingress.yaml
+  - networkpolicy.yaml
+# migrate-job.yaml is applied separately (see scripts/k8s-local.sh) because Jobs are immutable.
+# monitoring/ needs the Prometheus Operator CRDs and is applied separately too.

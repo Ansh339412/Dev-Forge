@@ -1,0 +1,6 @@
+apiVersion: v2
+name: devforge
+description: DevForge backend (NestJS) and frontend (nginx) for Kubernetes. PostgreSQL, Redis and S3-compatible storage are external dependencies.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

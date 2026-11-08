@@ -1,0 +1,19 @@
+{{- if .Values.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "devforge.fullname" . }}-backend
+  labels:
+    {{- include "devforge.labels" . | nindent 4 }}
+    {{- with .Values.metrics.serviceMonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "devforge.selector" (dict "ctx" . "component" "backend") | nindent 6 }}
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+{{- end }}

@@ -1,0 +1,31 @@
+# Needs an NGINX ingress controller. For HTTPS in the cloud add a tls: block (cert-manager works well).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: devforge
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 11m
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"   # keeps Socket.IO connections open
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: devforge.local
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend: { service: { name: backend, port: { number: 3000 } } }
+          - path: /socket.io
+            pathType: Prefix
+            backend: { service: { name: backend, port: { number: 3000 } } }
+          - path: /
+            pathType: Prefix
+            backend: { service: { name: frontend, port: { number: 80 } } }
+    # Local only: browsers download attachments straight from the storage service via presigned links.
+    - host: s3.devforge.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend: { service: { name: seaweedfs, port: { number: 8333 } } }

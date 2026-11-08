@@ -1,0 +1,24 @@
+# Non-secret settings. Secrets (DB URL, JWT secret, storage keys) live in the "devforge-secrets" Secret,
+# which scripts/k8s-local.sh generates; see secret.example.yaml for the expected keys.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devforge-config
+data:
+  NODE_ENV: production
+  PORT: "3000"
+  LOG_LEVEL: info
+  METRICS_PORT: "9100"
+  ENABLE_SWAGGER: "false"
+  APP_URL: http://devforge.local
+  CORS_ORIGIN: http://devforge.local
+  MAIL_FROM: DevForge <no-reply@devforge.local>
+  SMTP_HOST: mailhog
+  SMTP_PORT: "1025"
+  REDIS_URL: redis://redis:6379
+  S3_BUCKET: devforge-attachments
+  S3_REGION: us-east-1
+  S3_ENDPOINT: http://seaweedfs:8333
+  S3_PUBLIC_ENDPOINT: http://s3.devforge.local
+  S3_FORCE_PATH_STYLE: "true"
+  S3_CREATE_BUCKET: "true"

@@ -1,0 +1,72 @@
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  registry: ghcr.io
+  pullPolicy: IfNotPresent
+imagePullSecrets: []   # e.g. [{ name: ghcr-pull }] when the registry is private
+
+backend:
+  image:
+    repository: ""     # e.g. my-org/devforge/backend   (required)
+    tag: latest        # CI sets this to the commit SHA
+  replicas: 2
+  resources:
+    requests: { cpu: 100m, memory: 192Mi }
+    limits: { cpu: "1", memory: 512Mi }
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
+
+frontend:
+  image:
+    repository: ""     # e.g. my-org/devforge/frontend  (required)
+    tag: latest
+  replicas: 2
+  resources:
+    requests: { cpu: 25m, memory: 32Mi }
+    limits: { cpu: 250m, memory: 128Mi }
+
+# Name of a pre-created Secret holding DATABASE_URL, JWT_ACCESS_SECRET, S3_ACCESS_KEY_ID,
+# S3_SECRET_ACCESS_KEY (and optionally RESEND_API_KEY, GITHUB_TOKEN). This chart never creates secrets.
+existingSecret: devforge-secrets
+
+# Non-secret environment for the backend.
+config:
+  NODE_ENV: production
+  PORT: "3000"
+  LOG_LEVEL: info
+  METRICS_PORT: "9100"
+  ENABLE_SWAGGER: "false"
+  APP_URL: https://devforge.example.com
+  CORS_ORIGIN: https://devforge.example.com
+  MAIL_FROM: DevForge <no-reply@example.com>
+  REDIS_URL: redis://redis.example.internal:6379
+  S3_BUCKET: devforge-attachments
+  S3_REGION: us-east-1
+  S3_ENDPOINT: ""            # leave empty for AWS S3
+  S3_PUBLIC_ENDPOINT: ""
+  S3_FORCE_PATH_STYLE: "false"
+  S3_CREATE_BUCKET: "false"  # create the bucket yourself in the cloud
+  # With Resend, add RESEND_API_KEY to the secret. Otherwise set the SMTP_* values here.
+  SMTP_HOST: smtp.example.com
+  SMTP_PORT: "587"
+
+ingress:
+  enabled: true
+  className: nginx
+  host: devforge.example.com
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 11m
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+  tls:
+    enabled: false
+    secretName: devforge-tls
+
+metrics:
+  serviceMonitor:
+    enabled: false      # needs the Prometheus Operator CRDs
+    labels: {}          # e.g. { release: kube-prometheus-stack }
