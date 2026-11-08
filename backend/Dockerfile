@@ -1,5 +1,5 @@
 # ---- dev: used by docker-compose (bind-mounted source, hot reload) ----
-FROM node:20-slim AS dev
+FROM node:25-slim AS dev
 RUN apt-get update -y && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY package.json package-lock.json* ./
@@ -15,7 +15,7 @@ FROM dev AS build
 RUN npm run build && npm prune --omit=dev
 
 # ---- runtime: small, non-root, production deps only ----
-FROM node:20-slim AS runtime
+FROM node:25-slim AS runtime
 RUN apt-get update -y && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 ENV NODE_ENV=production
 WORKDIR /app
