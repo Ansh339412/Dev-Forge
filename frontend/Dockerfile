@@ -1,5 +1,5 @@
 # ---- dev: used by docker-compose (Vite dev server with hot reload) ----
-FROM node:20-slim AS dev
+FROM node:25-slim AS dev
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
