@@ -60,8 +60,8 @@ services:
       NODE_ENV: development
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
       REDIS_URL: redis://redis:6379
-      SMTP_HOST: mailhog
-      SMTP_PORT: "1025"
+      SMTP_HOST: ${SMTP_HOST:-mailhog}
+      SMTP_PORT: "${SMTP_PORT:-1025}"
       S3_ENDPOINT: http://s3:8333
     ports:
       - "3000:3000"

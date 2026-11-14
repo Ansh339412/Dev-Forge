@@ -26,4 +26,4 @@ chmod 600 .env.prod
 
 echo "Created .env.prod for https://${domain}"
 echo "Now fill in these values in .env.prod before starting:"
-grep -nE '^(RESEND_API_KEY|S3_BUCKET|S3_ENDPOINT|S3_PUBLIC_ENDPOINT|S3_ACCESS_KEY_ID|S3_SECRET_ACCESS_KEY)=$' .env.prod || true
+grep -nE '^(RESEND_API_KEY|SMTP_USER|SMTP_PASS|S3_BUCKET|S3_ENDPOINT|S3_PUBLIC_ENDPOINT|S3_ACCESS_KEY_ID|S3_SECRET_ACCESS_KEY)=$' .env.prod || true

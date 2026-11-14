@@ -18,7 +18,7 @@ automatically by Caddy. A 2 GB RAM server is enough for a demo or a small team. 
 | A server (Ubuntu 22.04+, 2 GB RAM) | runs the stack | any VPS provider |
 | A domain name | HTTPS certificate | your own domain, or free `<server-ip-with-dashes>.sslip.io` (for 203.0.113.7 use `203-0-113-7.sslip.io`) |
 | An S3-compatible bucket | file attachments | Cloudflare R2, Backblaze B2 or AWS S3. Keep it private. |
-| A Resend API key | verification, reset and invitation emails | resend.com (verify your sending domain) |
+| An email provider | verification, reset and invitation emails | Resend API key or Brevo SMTP credentials (verify your sender/domain) |
 
 ## Steps
 
@@ -30,9 +30,9 @@ sudo ufw allow 22 && sudo ufw allow 80 && sudo ufw allow 443 && sudo ufw enable
 # 2. Point your domain's DNS "A" record at the server's IP, then get the code onto the server
 git clone <your-repo-url> devforge && cd devforge
 
-# 3. Create .env.prod with random secrets, then fill in the S3 and Resend values it lists
+# 3. Create .env.prod with random secrets, then fill in S3 and email provider settings
 bash scripts/setup-prod-env.sh devforge.example.com
-nano .env.prod          # S3_BUCKET, S3_ENDPOINT/S3_PUBLIC_ENDPOINT, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY, RESEND_API_KEY
+nano .env.prod          # S3 settings and either RESEND_API_KEY or Brevo SMTP_USER/SMTP_PASS
 
 # 4. Start (the first build takes a few minutes; migrations run automatically before the backend starts)
 docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
@@ -74,7 +74,7 @@ Run the backup daily (cron) and copy the files off the server. Test a restore at
 | Certificate not issued | DNS record must point at this server; ports 80/443 open; `docker compose ... logs caddy` |
 | Backend restarting | `logs backend`: usually a missing value in `.env.prod` (the app names the missing variable) |
 | `relation ... does not exist` | migrations missing: commit `backend/prisma/migrations` and rebuild; `logs migrate` |
-| No emails | `RESEND_API_KEY` and a verified sender domain; `logs backend` shows the provider's response |
+| No emails | Check the selected Resend or SMTP credentials and verified sender; `logs backend` shows the provider's response |
 | Attachments fail | bucket exists and is private; keys have read/write on it; endpoint values match your provider |
 | Everyone rate-limited together | `TRUST_PROXY_HOPS` must be 2 with this stack |
 

@@ -49,6 +49,8 @@ docker compose up --build
 - Health: `GET /health/live`, `GET /health/ready`
 - Verification / invitation / reset emails: http://localhost:8025 (MailHog)
 
+By default, local email is caught by MailHog and is not delivered to real inboxes. To send through Brevo, set `SMTP_HOST=smtp-relay.brevo.com`, `SMTP_PORT=587`, `SMTP_USER` to your Brevo SMTP login, `SMTP_PASS` to your Brevo SMTP key, and `MAIL_FROM` to a sender verified with Brevo in your local `.env`. Leave `RESEND_API_KEY` empty when using SMTP; a configured Resend key takes precedence. Restart the backend with `docker compose up -d --force-recreate backend`. Never commit `.env` or share provider credentials.
+
 After a `package.json` change, rebuild with `docker compose up --build -V`.
 After a later schema change: `docker compose run --rm backend npx prisma migrate dev --name <change>`.
 
@@ -136,7 +138,7 @@ socket.on('task.changed', (e) => { /* { kind: created|updated|moved|deleted, tas
 
 The token is checked at connect time; reconnect after refreshing it. More than one backend replica needs the Socket.IO Redis adapter (planned with the Kubernetes phase).
 
-**Email:** set `RESEND_API_KEY` to send through the Resend API; otherwise SMTP is used (MailHog locally).
+**Email:** set `RESEND_API_KEY` to send through the Resend API; otherwise SMTP is used (MailHog locally, or a provider such as Brevo when configured).
 
 **Events:** assignment, comments and project updates are emitted as domain events (`src/common/events.ts`). The notifications module in the next phase subscribes to them without changing this code.
 
