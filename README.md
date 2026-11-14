@@ -56,6 +56,18 @@ After a later schema change: `docker compose run --rm backend npx prisma migrate
 
 Tests (needs `npm install` and `npx prisma generate` in `backend/`): `npm test`.
 
+## Deploy frontend to GitHub Pages
+
+The Vite frontend can be published as a GitHub Pages static site. The workflow in `.github/workflows/deploy-pages.yml` builds the app with a hash router and a repo-scoped base path, then uploads the generated `frontend/dist` output to GitHub Pages.
+
+To enable it in GitHub:
+
+1. Open the repository settings and enable GitHub Pages.
+2. Set the source to `GitHub Actions`.
+3. Push to `main` or trigger the workflow manually.
+
+The site will be served at `https://<user>.github.io/<repo>/`.
+
 ## Operations
 
 | Task | Command |
