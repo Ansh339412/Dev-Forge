@@ -49,7 +49,7 @@ docker compose up --build
 - Health: `GET /health/live`, `GET /health/ready`
 - Verification / invitation / reset emails: http://localhost:8025 (MailHog)
 
-By default, local email is caught by MailHog and is not delivered to real inboxes. To send through Brevo, set `SMTP_HOST=smtp-relay.brevo.com`, `SMTP_PORT=587`, `SMTP_USER` to your Brevo SMTP login, `SMTP_PASS` to your Brevo SMTP key, and `MAIL_FROM` to a sender verified with Brevo in your local `.env`. Leave `RESEND_API_KEY` empty when using SMTP; a configured Resend key takes precedence. Restart the backend with `docker compose up -d --force-recreate backend`. Never commit `.env` or share provider credentials.
+By default, local email is caught by MailHog and is not delivered to real inboxes. To send through Brevo, set `SMTP_HOST=smtp-relay.brevo.com`, `SMTP_PORT=587`, `SMTP_USER` to your Brevo SMTP login, `SMTP_PASS` to your Brevo SMTP key, and `MAIL_FROM` to a sender verified with Brevo in your local `.env`. For Gmail SMTP, use `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=587`, your Gmail address as both `SMTP_USER` and `MAIL_FROM`, and a Google App Password as `SMTP_PASS` (2-Step Verification must be enabled). Leave `RESEND_API_KEY` empty when using SMTP; a configured Resend key takes precedence. Restart the backend with `docker compose up -d --force-recreate backend`. Never commit `.env` or share provider credentials.
 
 After a `package.json` change, rebuild with `docker compose up --build -V`.
 After a later schema change: `docker compose run --rm backend npx prisma migrate dev --name <change>`.

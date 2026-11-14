@@ -8,8 +8,9 @@ The API also needs:
 
 - PostgreSQL: Neon Free or another free PostgreSQL provider.
 - Redis: Upstash Free or another Redis-compatible provider.
-- Email: Resend requires a verified sender/domain before registration,
-  verification, password reset, and invitation emails can be delivered.
+- Email: Gmail SMTP is configured in the Render Blueprint. Use a Google
+  App Password (requires 2-Step Verification) and the same Gmail address for
+  `SMTP_USER` and `MAIL_FROM`. Do not use the normal Google account password.
 
 The current Render Blueprint disables attachment uploads to avoid a metered
 object-storage subscription. The rest of the application does not require file
@@ -17,8 +18,10 @@ storage.
 
 Create the required services in their provider dashboards and keep their
 credentials private. When deploying the Render Blueprint, enter the database
-URL, Redis URL, Resend sender, and Resend API key as prompted. Never put
-credentials in the repository or GitHub Pages variables.
+URL, Redis URL, Gmail address for `SMTP_USER` and `MAIL_FROM`, and Google App
+Password for `SMTP_PASS`. Remove `RESEND_API_KEY` from the Render environment
+so the backend uses SMTP. Never put credentials in the repository or GitHub
+Pages variables.
 
 After the Render API is healthy:
 

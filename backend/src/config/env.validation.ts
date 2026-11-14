@@ -8,6 +8,7 @@ const REQUIRED = [
 ];
 const STORAGE_REQUIRED = ['S3_BUCKET', 'S3_ACCESS_KEY_ID', 'S3_SECRET_ACCESS_KEY'];
 const SMTP_REQUIRED = ['SMTP_HOST', 'SMTP_PORT'];
+const SMTP_AUTH_REQUIRED = ['SMTP_USER', 'SMTP_PASS'];
 
 /** Fail fast at boot instead of failing on the first request. */
 export function validateEnv(config: Record<string, unknown>): Record<string, unknown> {
@@ -15,6 +16,7 @@ export function validateEnv(config: Record<string, unknown>): Record<string, unk
     ...REQUIRED,
     ...(config.ATTACHMENTS_ENABLED === 'false' ? [] : STORAGE_REQUIRED),
     ...(config.RESEND_API_KEY ? [] : SMTP_REQUIRED),
+    ...(config.NODE_ENV === 'production' && !config.RESEND_API_KEY ? SMTP_AUTH_REQUIRED : []),
   ];
   const missing = needed.filter((key) => !config[key]);
   if (missing.length) {
