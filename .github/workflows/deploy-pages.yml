@@ -31,6 +31,7 @@ jobs:
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
           VITE_ROUTER_MODE: hash
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
         run: npm run build
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

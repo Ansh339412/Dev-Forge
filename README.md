@@ -68,6 +68,10 @@ To enable it in GitHub:
 
 The site will be served at `https://<user>.github.io/<repo>/`.
 
+The Pages site is frontend-only until a backend is deployed. See
+[`docs/free-hosting.md`](docs/free-hosting.md) for a free-tier backend setup and
+the required database, Redis, file storage, email, and GitHub Actions settings.
+
 ## Operations
 
 | Task | Command |
@@ -188,4 +192,3 @@ backend/src
 - Global rate limit of 100 req/min per IP, 5 req/min on auth endpoints. Helmet, strict CORS, whitelist validation (unknown fields rejected).
 - Non-members get 404 on workspace routes so workspace IDs are not enumerable.
 - No credentials in the repo; the app refuses to boot with missing env vars or the placeholder JWT secret.
-
