@@ -5,13 +5,15 @@ services:
     plan: free
     region: oregon
     rootDir: backend
-    buildCommand: npm install && npx prisma generate && npm run build
+    buildCommand: npm install --include=dev && npx prisma generate && npm run build
     startCommand: npx prisma migrate deploy && npm run start
     healthCheckPath: /health/ready
     envVars:
       - key: NODE_ENV
         value: production
       - key: ENABLE_SWAGGER
+        value: "false"
+      - key: ATTACHMENTS_ENABLED
         value: "false"
       - key: LOG_LEVEL
         value: info
@@ -28,20 +30,4 @@ services:
       - key: MAIL_FROM
         sync: false
       - key: RESEND_API_KEY
-        sync: false
-      - key: S3_BUCKET
-        sync: false
-      - key: S3_REGION
-        value: auto
-      - key: S3_ENDPOINT
-        sync: false
-      - key: S3_PUBLIC_ENDPOINT
-        sync: false
-      - key: S3_FORCE_PATH_STYLE
-        value: "false"
-      - key: S3_CREATE_BUCKET
-        value: "false"
-      - key: S3_ACCESS_KEY_ID
-        sync: false
-      - key: S3_SECRET_ACCESS_KEY
         sync: false

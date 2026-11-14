@@ -8,15 +8,17 @@ The API also needs:
 
 - PostgreSQL: Neon Free or another free PostgreSQL provider.
 - Redis: Upstash Free or another Redis-compatible provider.
-- S3-compatible file storage: Cloudflare R2 free allowance. Create a private
-  bucket and an API token limited to that bucket.
 - Email: Resend requires a verified sender/domain before registration,
   verification, password reset, and invitation emails can be delivered.
 
-Create these services in their provider dashboards and keep their credentials
-private. When deploying the Render Blueprint, enter the database URL, Redis URL,
-Resend sender and key, and R2 bucket, endpoint, and credentials as prompted.
-Never put credentials in the repository or GitHub Pages variables.
+The current Render Blueprint disables attachment uploads to avoid a metered
+object-storage subscription. The rest of the application does not require file
+storage.
+
+Create the required services in their provider dashboards and keep their
+credentials private. When deploying the Render Blueprint, enter the database
+URL, Redis URL, Resend sender, and Resend API key as prompted. Never put
+credentials in the repository or GitHub Pages variables.
 
 After the Render API is healthy:
 

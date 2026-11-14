@@ -51,6 +51,7 @@ export class AttachmentsService {
   ) {}
 
   async list(workspaceId: string, projectId: string, taskId: string) {
+    this.ensureEnabled();
     const rows = await this.prisma.attachment.findMany({
       where: this.scope(workspaceId, projectId, taskId),
       include: { uploadedBy: { select: USER_BRIEF } },
@@ -67,6 +68,7 @@ export class AttachmentsService {
     role: WorkspaceRole,
     file?: Express.Multer.File,
   ) {
+    this.ensureEnabled();
     if (!file) throw new BadRequestException('Send the file in a multipart field named "file"');
     if (!ALLOWED_TYPES.has(file.mimetype)) {
       throw new UnsupportedMediaTypeException('Allowed types: images, PDF, text, CSV, JSON and ZIP');
@@ -115,6 +117,7 @@ export class AttachmentsService {
     user: AuthUser,
     role: WorkspaceRole,
   ) {
+    this.ensureEnabled();
     const row = await this.prisma.attachment.findFirst({
       where: { id: attachmentId, ...this.scope(workspaceId, projectId, taskId) },
     });
@@ -149,6 +152,10 @@ export class AttachmentsService {
 
   private scope(workspaceId: string, projectId: string, taskId: string) {
     return { taskId, task: { projectId, project: { workspaceId } } };
+  }
+
+  private ensureEnabled() {
+    this.storage.ensureEnabled();
   }
 
   private async view(row: Attachment & { uploadedBy: unknown }) {
